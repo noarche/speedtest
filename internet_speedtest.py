@@ -2,11 +2,22 @@ from speedtest import Speedtest
 import json
 import argparse
 from datetime import datetime
-from colorama import Fore, Style, init
+from colorama import Fore, init
 
 # Initialize colorama for cross-platform color support
 init(autoreset=True)
 
+main_logo = '''
+ [91m_[0m[93m_[0m                     [92m_[0m [96m_[0m[94m_[0m[95m_[0m[91m_[0m[93m_[0m          [92m_[0m   
+[96m/[0m [94m_[0m[95m\[0m[91m_[0m [93m_[0m[92m_[0m   [96m_[0m[94m_[0m[95m_[0m  [91m_[0m[93m_[0m[92m_[0m  [96m_[0m[94m_[0m[95m|[0m [91m/[0m[93m_[0m[92m_[0m   [96m\[0m[94m_[0m[95m_[0m[91m_[0m  [93m_[0m[92m_[0m[96m_[0m[94m|[0m [95m|[0m[91m_[0m 
+[93m\[0m [92m\[0m[96m|[0m [94m'[0m[95m_[0m [91m\[0m [93m/[0m [92m_[0m [96m\[0m[94m/[0m [95m_[0m [91m\[0m[93m/[0m [92m_[0m[96m`[0m [94m|[0m [95m/[0m [91m/[0m[93m\[0m[92m/[0m [96m_[0m [94m\[0m[95m/[0m [91m_[0m[93m_[0m[92m|[0m [96m_[0m[94m_[0m[95m|[0m
+[91m_[0m[93m\[0m [92m\[0m [96m|[0m[94m_[0m[95m)[0m [91m|[0m  [93m_[0m[92m_[0m[96m/[0m  [94m_[0m[95m_[0m[91m/[0m [93m([0m[92m_[0m[96m|[0m [94m|[0m[95m/[0m [91m/[0m [93m|[0m  [92m_[0m[96m_[0m[94m/[0m[95m\[0m[91m_[0m[93m_[0m [92m\[0m [96m|[0m[94m_[0m 
+[95m\[0m[91m_[0m[93m_[0m[92m/[0m [96m.[0m[94m_[0m[95m_[0m[91m/[0m [93m\[0m[92m_[0m[96m_[0m[94m_[0m[95m|[0m[91m\[0m[93m_[0m[92m_[0m[96m_[0m[94m|[0m[95m\[0m[91m_[0m[93m_[0m[92m,[0m[96m_[0m[94m|[0m[95m\[0m[91m/[0m   [93m\[0m[92m_[0m[96m_[0m[94m_[0m[95m|[0m[91m|[0m[93m_[0m[92m_[0m[96m_[0m[94m/[0m[95m\[0m[91m_[0m[93m_[0m[92m|[0m
+   [96m|[0m[94m_[0m[95m|[0m                                       
+
+'''
+
+print(main_logo)
 
 def perform_speedtest():
     """Perform speedtest and return results."""
@@ -64,8 +75,8 @@ def main():
     parser = argparse.ArgumentParser(description="Run a network speed test.")
     parser.add_argument("-nolog", action="store_true", help="Disable saving results to a log file.")
     args = parser.parse_args()
-    
-    print(f"{Fore.BLUE}Starting speed test...")
+
+    print(f"{Fore.BLUE}Starting Speedtest.net...")
     results = perform_speedtest()
     if results:
         print(f"\n{Fore.MAGENTA}--- Speedtest Results ---")
