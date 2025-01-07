@@ -1,0 +1,4 @@
+speedtest-cli
+pingparsing
+colorama
+argparse
