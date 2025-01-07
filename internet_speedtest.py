@@ -1,5 +1,4 @@
 from speedtest import Speedtest
-import pingparsing
 import json
 import argparse
 from datetime import datetime
@@ -17,31 +16,20 @@ def perform_speedtest():
         
         print(f"{Fore.CYAN}Fetching the best server based on ping...")
         best_server = st.get_best_server()
-        server_host = best_server['host']
-        latency = best_server["latency"]
+        server_details = {
+            "host": best_server['host'],
+            "name": best_server['name'],
+            "latency_ms": round(best_server["latency"], 2),
+        }
         
-        print(f"{Fore.CYAN}Best server found: {Fore.GREEN}{server_host} "
-              f"{Fore.CYAN}(Ping: {Fore.YELLOW}{latency:.2f} ms{Fore.CYAN})")
+        print(f"{Fore.CYAN}Best server found: {Fore.GREEN}{server_details['host']} "
+              f"{Fore.CYAN}(Ping: {Fore.YELLOW}{server_details['latency_ms']} ms{Fore.CYAN})")
         
         print(f"{Fore.CYAN}Performing download test...")
         download_speed = st.download()
         
         print(f"{Fore.CYAN}Performing upload test...")
         upload_speed = st.upload()
-        
-        # Jitter Calculation
-        print(f"{Fore.CYAN}Calculating jitter...")
-        ping_parser = pingparsing.PingParsing()
-        transmitter = pingparsing.PingTransmitter()
-        transmitter.destination = server_host
-        transmitter.count = 10  # Send 10 pings for better jitter calculation
-        result = transmitter.ping()
-        parsed_result = ping_parser.parse(result).as_dict()
-        jitter = parsed_result.get("rtt_mdev", None)  # Get jitter (standard deviation of RTT)
-
-        if jitter is None:
-            print(f"{Fore.YELLOW}Jitter calculation failed. Setting jitter to 0.")
-            jitter = 0  # Default fallback value
         
         # Get current time
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -51,8 +39,7 @@ def perform_speedtest():
             "timestamp": current_time,
             "download_speed_mbps": round(download_speed / 1e6, 2),
             "upload_speed_mbps": round(upload_speed / 1e6, 2),
-            "latency_ms": round(latency, 2),
-            "jitter_ms": round(jitter, 2),  # Round the valid or fallback jitter
+            "server_details": server_details,
         }
         
         return results
@@ -83,8 +70,14 @@ def main():
     if results:
         print(f"\n{Fore.MAGENTA}--- Speedtest Results ---")
         for key, value in results.items():
-            key_display = key.replace("_", " ").capitalize()
-            print(f"{Fore.YELLOW}{key_display}: {Fore.CYAN}{value}")
+            if key == "server_details":
+                print(f"\n{Fore.YELLOW}Server Details:")
+                for detail_key, detail_value in value.items():
+                    detail_key_display = detail_key.replace("_", " ").capitalize()
+                    print(f"{Fore.CYAN}{detail_key_display}: {Fore.GREEN}{detail_value}")
+            else:
+                key_display = key.replace("_", " ").capitalize()
+                print(f"{Fore.YELLOW}{key_display}: {Fore.CYAN}{value}")
         
         # Save the results unless the -nolog argument is used
         if not args.nolog:
