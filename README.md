@@ -2,8 +2,7 @@
 
 Test internet speed from terminal. 
 
-![image](https://github.com/user-attachments/assets/fba643b8-fa83-4fa8-bdba-95c72a69476f)
-
+![speedmon](https://github.com/user-attachments/assets/06f789fe-d491-4afa-923d-8fe30f977591)
 
 
 ### Notes
