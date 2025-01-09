@@ -3,21 +3,11 @@ import json
 import argparse
 from datetime import datetime
 from colorama import Fore, init
+import os
 
 # Initialize colorama for cross-platform color support
 init(autoreset=True)
 
-main_logo = '''
- [91m_[0m[93m_[0m                     [92m_[0m [96m_[0m[94m_[0m[95m_[0m[91m_[0m[93m_[0m          [92m_[0m   
-[96m/[0m [94m_[0m[95m\[0m[91m_[0m [93m_[0m[92m_[0m   [96m_[0m[94m_[0m[95m_[0m  [91m_[0m[93m_[0m[92m_[0m  [96m_[0m[94m_[0m[95m|[0m [91m/[0m[93m_[0m[92m_[0m   [96m\[0m[94m_[0m[95m_[0m[91m_[0m  [93m_[0m[92m_[0m[96m_[0m[94m|[0m [95m|[0m[91m_[0m 
-[93m\[0m [92m\[0m[96m|[0m [94m'[0m[95m_[0m [91m\[0m [93m/[0m [92m_[0m [96m\[0m[94m/[0m [95m_[0m [91m\[0m[93m/[0m [92m_[0m[96m`[0m [94m|[0m [95m/[0m [91m/[0m[93m\[0m[92m/[0m [96m_[0m [94m\[0m[95m/[0m [91m_[0m[93m_[0m[92m|[0m [96m_[0m[94m_[0m[95m|[0m
-[91m_[0m[93m\[0m [92m\[0m [96m|[0m[94m_[0m[95m)[0m [91m|[0m  [93m_[0m[92m_[0m[96m/[0m  [94m_[0m[95m_[0m[91m/[0m [93m([0m[92m_[0m[96m|[0m [94m|[0m[95m/[0m [91m/[0m [93m|[0m  [92m_[0m[96m_[0m[94m/[0m[95m\[0m[91m_[0m[93m_[0m [92m\[0m [96m|[0m[94m_[0m 
-[95m\[0m[91m_[0m[93m_[0m[92m/[0m [96m.[0m[94m_[0m[95m_[0m[91m/[0m [93m\[0m[92m_[0m[96m_[0m[94m_[0m[95m|[0m[91m\[0m[93m_[0m[92m_[0m[96m_[0m[94m|[0m[95m\[0m[91m_[0m[93m_[0m[92m,[0m[96m_[0m[94m|[0m[95m\[0m[91m/[0m   [93m\[0m[92m_[0m[96m_[0m[94m_[0m[95m|[0m[91m|[0m[93m_[0m[92m_[0m[96m_[0m[94m/[0m[95m\[0m[91m_[0m[93m_[0m[92m|[0m
-   [96m|[0m[94m_[0m[95m|[0m                                       
-
-'''
-
-print(main_logo)
 
 def perform_speedtest():
     """Perform speedtest and return results."""
@@ -61,11 +51,24 @@ def perform_speedtest():
 
 
 def save_results_to_file(results, file_path="Internet.Speed.Results.json"):
-    """Append results to a JSON file."""
+    """Save results to a JSON file, updating it if it already exists."""
     try:
-        with open(file_path, "a") as file:
-            json.dump(results, file)
-            file.write("\n")  # Ensure results are stored line by line
+        # Check if the file exists and load existing data
+        if os.path.exists(file_path):
+            with open(file_path, "r") as file:
+                try:
+                    data = json.load(file)
+                except json.JSONDecodeError:
+                    data = []  # If the file is empty or invalid, initialize an empty list
+        else:
+            data = []
+
+        # Append the new results
+        data.append(results)
+        
+        # Save the updated data back to the file
+        with open(file_path, "w") as file:
+            json.dump(data, file, indent=4)
         print(f"{Fore.GREEN}Results saved to {file_path}")
     except Exception as e:
         print(f"{Fore.RED}Error saving results to file: {e}")
